@@ -82,4 +82,31 @@ public class EndPointControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("sort by things, done is false"));
     }
+
+    @Test
+    public void testFormDataByString() throws Exception {
+        RequestBuilder req = MockMvcRequestBuilders.post("/tv-shows/genre/fantasy/length/1h");
+
+        this.mvc.perform(req)
+                .andExpect(status().isOk())
+                .andExpect(content().string("genre is fantasy and length is 1h"));
+    }
+
+    @Test
+    public void testFormDataByMap() throws Exception {
+        RequestBuilder req = MockMvcRequestBuilders.post("/pokemon/type/fire/id/4");
+
+        this.mvc.perform(req)
+                .andExpect(status().isOk())
+                .andExpect(content().string("type is fire and id is 4"));
+    }
+
+    @Test
+    public void testFormDataByClass() throws Exception {
+        RequestBuilder req = MockMvcRequestBuilders.post("/tasks/sortBy/things/done/false");
+
+        this.mvc.perform(req)
+                .andExpect(status().isOk())
+                .andExpect(content().string("sort by things, done is false"));
+    }
 }
