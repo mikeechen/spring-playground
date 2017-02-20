@@ -13,9 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Created by michaelchen on 2/19/17.
- */
 @RunWith(SpringRunner.class)
 @WebMvcTest(HelloController.class)
 public class EndPointControllerTest {
@@ -57,5 +54,32 @@ public class EndPointControllerTest {
         this.mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(content().string("Deleted!"));
+    }
+
+    @Test
+    public void testQueryStringByItems() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/tv-shows?genre=fantasy&length=1h");
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("genre is fantasy and length is 1h"));
+    }
+
+    @Test
+    public void testQueryStringByMap() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/pokemon?type=fire&id=4");
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("type is fire and id is 4"));
+    }
+
+    @Test
+    public void testQueryStringByClass() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/tasks?sortBy=things&done=false");
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().string("sort by things, done is false"));
     }
 }

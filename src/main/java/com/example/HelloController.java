@@ -2,6 +2,9 @@ package com.example;
 
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.plaf.synth.SynthEditorPaneUI;
+import java.util.Map;
+
 @RestController
 public class HelloController {
 
@@ -23,5 +26,20 @@ public class HelloController {
   @DeleteMapping("/hello")
   public String helloDelete() {
     return "Deleted!";
+  }
+
+  @GetMapping("/tv-shows")
+  public String tvShow(@RequestParam String genre, @RequestParam String length) {
+    return String.format("genre is %s and length is %s", genre, length);
+  }
+
+  @GetMapping("/pokemon")
+  public String pokemon(@RequestParam Map queryString) {
+    return String.format("type is %s and id is %s", queryString.get("type"), queryString.get("id"));
+  }
+
+  @GetMapping("/tasks")
+  public String tasks(Tasks tasks) {
+    return String.format("sort by %s, done is %s", tasks.getSortBy(), tasks.getDone().toString());
   }
 }
