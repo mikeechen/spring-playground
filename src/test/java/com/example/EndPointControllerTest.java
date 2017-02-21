@@ -1,5 +1,7 @@
 package com.example;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -21,7 +26,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EndPointControllerTest {
 
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
+
+    private Gson gson = new GsonBuilder().create();
+
+    static class PokeBuilder {
+        final String name;
+        final int id;
+        final int weight;
+        final Types[] types;
+
+        PokeBuilder(String name, int id, int weight, Types[] types) {
+            this.name = name;
+            this.id = id;
+            this.weight = weight;
+            this.types = types;
+        }
+    }
 
     @Test
     public void testHome() throws Exception {
@@ -147,5 +168,90 @@ public class EndPointControllerTest {
         this.mvc.perform(req)
                 .andExpect(status().isOk())
                 .andExpect(content().string("sort by things, done is false"));
+    }
+
+    @Test
+    public void testObjectParams() throws Exception {
+        MockHttpServletRequestBuilder req = post("/js/object")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "  \"name\": \"charizard\",\n" +
+                        "  \"id\": 6,\n" +
+                        "  \"weight\": 905,\n" +
+                        "  \"types\": [\n" +
+                        "    {\n" +
+                        "      \"slot\": 2,\n" +
+                        "      \"type\": {\n" +
+                        "        \"url\": \"http://pokeapi.co/api/v2/type/3/\",\n" +
+                        "        \"name\": \"flying\"\n" +
+                        "      }\n" +
+                        "    },\n" +
+                        "    {\n" +
+                        "      \"slot\": 1,\n" +
+                        "      \"type\": {\n" +
+                        "        \"url\": \"http://pokeapi.co/api/v2/type/10/\",\n" +
+                        "        \"name\": \"fire\"\n" +
+                        "      }\n" +
+                        "    }\n" +
+                        "  ]\n" +
+                        "}");
+
+        this.mvc.perform(req)
+                .andExpect(status().isOk())
+                .andExpect(content().string("My name is charizard, with id of 6, weight of 905, and types of flying and fire"));
+    }
+
+    @Test
+    public void testObjectParamsFromBuilder() throws Exception {
+        Type flying = new Type();
+        Type fire = new Type();
+
+        flying.setUrl("http://pokeapi.co/api/v2/type/3/");
+        flying.setName("flying");
+
+        fire.setUrl("http://pokeapi.co/api/v2/type/10/");
+        fire.setName("fire");
+
+        Types[] types = new Types[2];
+        Types types1 = new Types();
+        Types types2 = new Types();
+
+        types1.setSlot(2);
+        types1.setType(flying);
+
+        types2.setSlot(1);
+        types2.setType(fire);
+
+        types[0] = types1;
+        types[1] = types2;
+
+        PokeBuilder pokemon = new PokeBuilder("charizard", 6, 905, types);
+
+        MockHttpServletRequestBuilder req = post("/js/object")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(pokemon));
+
+        this.mvc.perform(req)
+                .andExpect(status().isOk())
+                .andExpect(content().string("My name is charizard, with id of 6, weight of 905, and types of flying and fire"));
+    }
+
+    @Test
+    public void testObjectParamsFromFile() throws Exception {
+        String json = getJSON("/data.json");
+
+        MockHttpServletRequestBuilder req = post("/js/object")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        this.mvc.perform(req)
+                .andExpect(status().isOk())
+                .andExpect(content().string("My name is charizard, with id of 6, weight of 905, and types of flying and fire"));
+    }
+
+    private String getJSON(String path) throws Exception {
+        URL url = this.getClass().getResource(path);
+
+        return new String(Files.readAllBytes(Paths.get(url.getFile())));
     }
 }

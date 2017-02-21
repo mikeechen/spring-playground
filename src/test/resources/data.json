@@ -1,0 +1,21 @@
+{
+  "name": "charizard",
+  "id": 6,
+  "weight": 905,
+  "types": [
+    {
+      "slot": 2,
+      "type": {
+        "url": "http://pokeapi.co/api/v2/type/3/",
+        "name": "flying"
+      }
+    },
+    {
+      "slot": 1,
+      "type": {
+        "url": "http://pokeapi.co/api/v2/type/10/",
+        "name": "fire"
+      }
+    }
+  ]
+}

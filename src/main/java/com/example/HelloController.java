@@ -3,6 +3,7 @@ package com.example;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.MediaPrintableArea;
 import javax.swing.plaf.synth.SynthEditorPaneUI;
 import java.util.Map;
 
@@ -72,5 +73,13 @@ public class HelloController {
   @PostMapping(value = "/tasks", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   public String tasksForm(Tasks tasks) {
     return String.format("sort by %s, done is %s", tasks.getSortBy(), tasks.getDone().toString());
+  }
+
+  @PostMapping(path = "/js/object")
+  public String pokemonParse(@RequestBody Pokemon pokemon) {
+    return String.format("My name is %s, with id of %d, weight of %d, and types of %s and %s",
+            pokemon.getName(), pokemon.getId(), pokemon.getWeight(),
+            pokemon.getTypes()[0].getType().getName(),
+            pokemon.getTypes()[1].getType().getName());
   }
 }
