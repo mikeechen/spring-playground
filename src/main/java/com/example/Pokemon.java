@@ -6,6 +6,13 @@ public class Pokemon {
     private int weight;
     private Types[] types;
 
+    Pokemon(String name, int id, int weight, Types[] types) {
+        this.name = name;
+        this.id = id;
+        this.weight = weight;
+        this.types = types;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -44,6 +51,11 @@ class Types {
     private int slot;
     private Type type;
 
+    Types(int slot, Type type) {
+        this.slot = slot;
+        this.type = type;
+    }
+
     public void setSlot(int slot) {
         this.slot = slot;
     }
@@ -64,6 +76,11 @@ class Types {
 class Type {
     private String url;
     private String name;
+
+    Type(String url, String name) {
+        this.url = url;
+        this.name = name;
+    }
 
     public void setUrl(String url) {
         this.url = url;

@@ -203,24 +203,12 @@ public class EndPointControllerTest {
 
     @Test
     public void testObjectParamsFromBuilder() throws Exception {
-        Type flying = new Type();
-        Type fire = new Type();
-
-        flying.setUrl("http://pokeapi.co/api/v2/type/3/");
-        flying.setName("flying");
-
-        fire.setUrl("http://pokeapi.co/api/v2/type/10/");
-        fire.setName("fire");
+        Type flying = new Type("http://pokeapi.co/api/v2/type/3/", "flying");
+        Type fire = new Type("http://pokeapi.co/api/v2/type/10/", "fire");
 
         Types[] types = new Types[2];
-        Types types1 = new Types();
-        Types types2 = new Types();
-
-        types1.setSlot(2);
-        types1.setType(flying);
-
-        types2.setSlot(1);
-        types2.setType(fire);
+        Types types1 = new Types(2, flying);
+        Types types2 = new Types(1, fire);
 
         types[0] = types1;
         types[1] = types2;
